@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopeecapture.Mapper.SearchkeyMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.shopeecapture.Bean.Searchkey">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="keyname" column="keyName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select * from shopeeproduct.searchkey
+        where id = #{id}
+    </select>
+
+    <!--查询全部-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select * from shopeeproduct.searchkey
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select * from shopeeproduct.searchkey limit #{offset}, #{rowCount}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByFilters" resultMap="BaseResultMap">
+        select * from shopeeproduct.searchkey
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="keyname != null and keyname != ''">
+                and keyName like CONCAT('%',#{keyname},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shopeeproduct.searchkey(keyName)
+        values (#{keyname})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shopeeproduct.searchkey
+        <set>
+            <if test="keyname != null and keyname != ''">
+                keyName = #{keyname},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shopeeproduct.searchkey
+        where id = #{id}
+    </delete>
+
+</mapper>

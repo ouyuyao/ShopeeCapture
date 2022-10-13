@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopeecapture.Mapper.ProductsMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.shopeecapture.Bean.Products">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="eventid" column="eventId" jdbcType="VARCHAR"/>
+        <result property="itemid" column="itemid" jdbcType="VARCHAR"/>
+        <result property="shopid" column="shopid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="LONGVARCHAR"/>
+        <result property="stock" column="stock" jdbcType="INTEGER"/>
+        <result property="min_stock" column="min_stock" jdbcType="INTEGER"/>
+        <result property="max_stock" column="max_stock" jdbcType="INTEGER"/>
+        <result property="likeCount" column="like_count" jdbcType="INTEGER"/>
+        <result property="min_likeCount" column="min_like_count" jdbcType="INTEGER"/>
+        <result property="max_likeCount" column="max_like_count" jdbcType="INTEGER"/>
+        <result property="sold" column="sold" jdbcType="INTEGER"/>
+        <result property="min_sold" column="min_sold" jdbcType="INTEGER"/>
+        <result property="max_sold" column="max_sold" jdbcType="INTEGER"/>
+        <result property="historicalSold" column="historical_sold" jdbcType="INTEGER"/>
+        <result property="min_historicalSold" column="min_historical_sold" jdbcType="INTEGER"/>
+        <result property="max_historicalSold" column="max_historical_sold" jdbcType="INTEGER"/>
+        <result property="currency" column="currency" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DOUBLE"/>
+        <result property="min_price" column="min_price" jdbcType="DOUBLE"/>
+        <result property="max_price" column="max_price" jdbcType="DOUBLE"/>
+        <result property="priceMin" column="price_min" jdbcType="DOUBLE"/>
+        <result property="min_priceMin" column="min_price_min" jdbcType="DOUBLE"/>
+        <result property="max_priceMin" column="max_price_min" jdbcType="DOUBLE"/>
+        <result property="priceMax" column="price_max" jdbcType="DOUBLE"/>
+        <result property="min_priceMax" column="min_price_max" jdbcType="DOUBLE"/>
+        <result property="max_priceMax" column="max_price_max" jdbcType="DOUBLE"/>
+        <result property="priceBeforeDiscount" column="price_before_discount" jdbcType="DOUBLE"/>
+        <result property="min_priceBeforeDiscount" column="min_price_before_discount" jdbcType="DOUBLE"/>
+        <result property="max_priceBeforeDiscount" column="max_price_before_discount" jdbcType="DOUBLE"/>
+        <result property="priceMinBeforeDiscount" column="price_min_before_discount" jdbcType="DOUBLE"/>
+        <result property="min_priceMinBeforeDiscount" column="min_price_min_before_discount" jdbcType="DOUBLE"/>
+        <result property="max_priceMinBeforeDiscount" column="max_price_min_before_discount" jdbcType="DOUBLE"/>
+        <result property="priceMaxBeforeDiscount" column="price_max_before_discount" jdbcType="DOUBLE"/>
+        <result property="min_priceMaxBeforeDiscount" column="min_price_max_before_discount" jdbcType="DOUBLE"/>
+        <result property="max_priceMaxBeforeDiscount" column="max_price_max_before_discount" jdbcType="DOUBLE"/>
+        <result property="showDiscount" column="show_discount" jdbcType="VARCHAR"/>
+        <result property="tierVariations" column="tier_variations" jdbcType="LONGVARCHAR"/>
+        <result property="shopeeVerified" column="shopee_verified" jdbcType="VARCHAR"/>
+        <result property="isOfficialShop" column="is_official_shop" jdbcType="VARCHAR"/>
+        <result property="shopLocation" column="shop_location" jdbcType="VARCHAR"/>
+        <result property="searchstr" column="searchStr" jdbcType="VARCHAR"/>
+        <result property="valueDate" column="value_date" jdbcType="DATE"/>
+        <result property="min_valueDate" column="min_value_date" jdbcType="DATE"/>
+        <result property="max_valueDate" column="max_value_date" jdbcType="DATE"/>
+        <result property="insertTime" column="insert_time" jdbcType="TIMESTAMP"/>
+        <result property="min_insertTime" column="min_insert_time" jdbcType="TIMESTAMP"/>
+        <result property="max_insertTime" column="max_insert_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select * from shopeeproduct.products
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select * from shopeeproduct.products limit #{offset}, #{rowCount}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByFilters" resultMap="BaseResultMap">
+        select * from shopeeproduct.products
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="eventid != null and eventid != ''">
+                and eventId like CONCAT('%',#{eventid},'%')
+            </if>
+            <if test="itemid != null and itemid != ''">
+                and itemid like CONCAT('%',#{itemid},'%')
+            </if>
+            <if test="shopid != null and shopid != ''">
+                and shopid like CONCAT('%',#{shopid},'%')
+            </if>
+            <if test="name != null and name != ''">
+                and name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="stock != null">
+                and stock = #{stock}
+            </if>
+            <if test="min_stock != null">
+                and stock &gt;= #{min_stock}
+            </if>
+            <if test="max_stock != null">
+                and stock &lt;= #{max_stock}
+            </if>
+            <if test="likeCount != null">
+                and like_count = #{likeCount}
+            </if>
+            <if test="min_likeCount != null">
+                and like_count &gt;= #{min_likeCount}
+            </if>
+            <if test="max_likeCount != null">
+                and like_count &lt;= #{max_likeCount}
+            </if>
+            <if test="sold != null">
+                and sold = #{sold}
+            </if>
+            <if test="min_sold != null">
+                and sold &gt;= #{min_sold}
+            </if>
+            <if test="max_sold != null">
+                and sold &lt;= #{max_sold}
+            </if>
+            <if test="historicalSold != null">
+                and historical_sold = #{historicalSold}
+            </if>
+            <if test="min_historicalSold != null">
+                and historical_sold &gt;= #{min_historicalSold}
+            </if>
+            <if test="max_historicalSold != null">
+                and historical_sold &lt;= #{max_historicalSold}
+            </if>
+            <if test="currency != null and currency != ''">
+                and currency like CONCAT('%',#{currency},'%')
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="min_price != null">
+                and price &gt;= #{min_price}
+            </if>
+            <if test="max_price != null">
+                and price &lt;= #{max_price}
+            </if>
+            <if test="priceMin != null">
+                and price_min = #{priceMin}
+            </if>
+            <if test="min_priceMin != null">
+                and price_min &gt;= #{min_priceMin}
+            </if>
+            <if test="max_priceMin != null">
+                and price_min &lt;= #{max_priceMin}
+            </if>
+            <if test="priceMax != null">
+                and price_max = #{priceMax}
+            </if>
+            <if test="min_priceMax != null">
+                and price_max &gt;= #{min_priceMax}
+            </if>
+            <if test="max_priceMax != null">
+                and price_max &lt;= #{max_priceMax}
+            </if>
+            <if test="priceBeforeDiscount != null">
+                and price_before_discount = #{priceBeforeDiscount}
+            </if>
+            <if test="min_priceBeforeDiscount != null">
+                and price_before_discount &gt;= #{min_priceBeforeDiscount}
+            </if>
+            <if test="max_priceBeforeDiscount != null">
+                and price_before_discount &lt;= #{max_priceBeforeDiscount}
+            </if>
+            <if test="priceMinBeforeDiscount != null">
+                and price_min_before_discount = #{priceMinBeforeDiscount}
+            </if>
+            <if test="min_priceMinBeforeDiscount != null">
+                and price_min_before_discount &gt;= #{min_priceMinBeforeDiscount}
+            </if>
+            <if test="max_priceMinBeforeDiscount != null">
+                and price_min_before_discount &lt;= #{max_priceMinBeforeDiscount}
+            </if>
+            <if test="priceMaxBeforeDiscount != null">
+                and price_max_before_discount = #{priceMaxBeforeDiscount}
+            </if>
+            <if test="min_priceMaxBeforeDiscount != null">
+                and price_max_before_discount &gt;= #{min_priceMaxBeforeDiscount}
+            </if>
+            <if test="max_priceMaxBeforeDiscount != null">
+                and price_max_before_discount &lt;= #{max_priceMaxBeforeDiscount}
+            </if>
+            <if test="showDiscount != null and showDiscount != ''">
+                and show_discount like CONCAT('%',#{showDiscount},'%')
+            </if>
+            <if test="tierVariations != null and tierVariations != ''">
+                and tier_variations like CONCAT('%',#{tierVariations},'%')
+            </if>
+            <if test="shopeeVerified != null and shopeeVerified != ''">
+                and shopee_verified like CONCAT('%',#{shopeeVerified},'%')
+            </if>
+            <if test="isOfficialShop != null and isOfficialShop != ''">
+                and is_official_shop like CONCAT('%',#{isOfficialShop},'%')
+            </if>
+            <if test="shopLocation != null and shopLocation != ''">
+                and shop_location like CONCAT('%',#{shopLocation},'%')
+            </if>
+            <if test="searchstr != null and searchstr != ''">
+                and searchStr like CONCAT('%',#{searchstr},'%')
+            </if>
+            <if test="valueDate != null">
+                and value_date = date_format(#{valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_valueDate != null">
+                and value_date &gt;= date_format(#{min_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_valueDate != null">
+                and value_date &lt;= date_format(#{max_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="insertTime != null">
+                and insert_time = date_format(#{insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_insertTime != null">
+                and insert_time &gt;= date_format(#{min_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_insertTime != null">
+                and insert_time &lt;= date_format(#{max_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shopeeproduct.products(eventId, itemid, shopid, name, stock, like_count, sold, historical_sold,
+                                           currency, price, price_min, price_max, price_before_discount,
+                                           price_min_before_discount, price_max_before_discount, show_discount,
+                                           tier_variations, shopee_verified, is_official_shop, shop_location, searchStr,
+                                           value_date, insert_time)
+        values (#{eventid}, #{itemid}, #{shopid}, #{name}, #{stock}, #{likeCount}, #{sold}, #{historicalSold},
+                #{currency}, #{price}, #{priceMin}, #{priceMax}, #{priceBeforeDiscount}, #{priceMinBeforeDiscount},
+                #{priceMaxBeforeDiscount}, #{showDiscount}, #{tierVariations}, #{shopeeVerified}, #{isOfficialShop},
+                #{shopLocation}, #{searchstr}, #{valueDate}, #{insertTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shopeeproduct.products
+        <set>
+            <if test="eventid != null and eventid != ''">
+                eventId = #{eventid},
+            </if>
+            <if test="itemid != null and itemid != ''">
+                itemid = #{itemid},
+            </if>
+            <if test="shopid != null and shopid != ''">
+                shopid = #{shopid},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="stock != null">
+                stock = #{stock},
+            </if>
+            <if test="likeCount != null">
+                like_count = #{likeCount},
+            </if>
+            <if test="sold != null">
+                sold = #{sold},
+            </if>
+            <if test="historicalSold != null">
+                historical_sold = #{historicalSold},
+            </if>
+            <if test="currency != null and currency != ''">
+                currency = #{currency},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="priceMin != null">
+                price_min = #{priceMin},
+            </if>
+            <if test="priceMax != null">
+                price_max = #{priceMax},
+            </if>
+            <if test="priceBeforeDiscount != null">
+                price_before_discount = #{priceBeforeDiscount},
+            </if>
+            <if test="priceMinBeforeDiscount != null">
+                price_min_before_discount = #{priceMinBeforeDiscount},
+            </if>
+            <if test="priceMaxBeforeDiscount != null">
+                price_max_before_discount = #{priceMaxBeforeDiscount},
+            </if>
+            <if test="showDiscount != null and showDiscount != ''">
+                show_discount = #{showDiscount},
+            </if>
+            <if test="tierVariations != null and tierVariations != ''">
+                tier_variations = #{tierVariations},
+            </if>
+            <if test="shopeeVerified != null and shopeeVerified != ''">
+                shopee_verified = #{shopeeVerified},
+            </if>
+            <if test="isOfficialShop != null and isOfficialShop != ''">
+                is_official_shop = #{isOfficialShop},
+            </if>
+            <if test="shopLocation != null and shopLocation != ''">
+                shop_location = #{shopLocation},
+            </if>
+            <if test="searchstr != null and searchstr != ''">
+                searchStr = #{searchstr},
+            </if>
+            <if test="valueDate != null">
+                value_date = #{valueDate},
+            </if>
+            <if test="insertTime != null">
+                insert_time = #{insertTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shopeeproduct.products
+        where id = #{id}
+    </delete>
+
+</mapper>

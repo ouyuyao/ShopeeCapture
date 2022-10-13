@@ -1,0 +1,66 @@
+#port
+server:
+  port: 8086
+
+spring:
+  datasource:
+    #mysql
+    username: root
+    password: 123456789
+    url: jdbc:mysql://localhost:3306/shopeeproduct?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #durid
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 8
+      min-idle: 8
+      max-active: 30
+      max-wait: 600000
+      time-between-eviction-runs-millis: 600000
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,log4j2
+      filter:
+        stat:
+          enabled: true
+          db-type: mysql
+          log-slow-sql: true
+          slow-sql-millis: 2000
+      web-stat-filter:
+        enabled: true
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+      mysql:
+        usePingMethod: false
+      async-init: true
+  task:
+    execution:
+      pool:
+        core-size: 20
+        max-size: 40
+        queue-capacity: 20
+        keep-alive: 60
+        thread-name-prefix: threadTask
+
+#mybatis
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    use-generated-keys: true
+
+timeTask:
+  #每天11点08分运行
+#  cron: 30 35 16 * * ?
+  #每五分钟
+#  cron: 0 */3 * * * ?
+  #每天零时
+  cron: 0 0 0,12 * * ?
+  cronShopInfo: 0 20 2,4,6,8,10,14,16,18,20,22 * * ?
+  cronProductDetails: 0 0 3,5,7,9,11,15,17,19,21,23 * * ?

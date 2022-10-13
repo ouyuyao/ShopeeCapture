@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopeecapture.Mapper.DetailshopvouchersMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.shopeecapture.Bean.Detailshopvouchers">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="discountValue" column="discount_value" jdbcType="DOUBLE"/>
+        <result property="min_discountValue" column="min_discount_value" jdbcType="DOUBLE"/>
+        <result property="max_discountValue" column="max_discount_value" jdbcType="DOUBLE"/>
+        <result property="shopid" column="shopid" jdbcType="VARCHAR"/>
+        <result property="minSpend" column="min_spend" jdbcType="DOUBLE"/>
+        <result property="min_minSpend" column="min_min_spend" jdbcType="DOUBLE"/>
+        <result property="max_minSpend" column="max_min_spend" jdbcType="DOUBLE"/>
+        <result property="eventid" column="eventId" jdbcType="VARCHAR"/>
+        <result property="valueDate" column="value_date" jdbcType="DATE"/>
+        <result property="min_valueDate" column="min_value_date" jdbcType="DATE"/>
+        <result property="max_valueDate" column="max_value_date" jdbcType="DATE"/>
+        <result property="insertTime" column="insert_time" jdbcType="TIMESTAMP"/>
+        <result property="min_insertTime" column="min_insert_time" jdbcType="TIMESTAMP"/>
+        <result property="max_insertTime" column="max_insert_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select * from shopeeproduct.detailshopvouchers
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select * from shopeeproduct.detailshopvouchers limit #{offset}, #{rowCount}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByFilters" resultMap="BaseResultMap">
+        select * from shopeeproduct.detailshopvouchers
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="discountValue != null">
+                and discount_value = #{discountValue}
+            </if>
+            <if test="min_discountValue != null">
+                and discount_value &gt;= #{min_discountValue}
+            </if>
+            <if test="max_discountValue != null">
+                and discount_value &lt;= #{max_discountValue}
+            </if>
+            <if test="shopid != null and shopid != ''">
+                and shopid like CONCAT('%',#{shopid},'%')
+            </if>
+            <if test="minSpend != null">
+                and min_spend = #{minSpend}
+            </if>
+            <if test="min_minSpend != null">
+                and min_spend &gt;= #{min_minSpend}
+            </if>
+            <if test="max_minSpend != null">
+                and min_spend &lt;= #{max_minSpend}
+            </if>
+            <if test="eventid != null and eventid != ''">
+                and eventId like CONCAT('%',#{eventid},'%')
+            </if>
+            <if test="valueDate != null">
+                and value_date = date_format(#{valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_valueDate != null">
+                and value_date &gt;= date_format(#{min_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_valueDate != null">
+                and value_date &lt;= date_format(#{max_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="insertTime != null">
+                and insert_time = date_format(#{insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_insertTime != null">
+                and insert_time &gt;= date_format(#{min_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_insertTime != null">
+                and insert_time &lt;= date_format(#{max_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shopeeproduct.detailshopvouchers(discount_value, shopid, min_spend, eventId, value_date, insert_time)
+        values (#{discountValue}, #{shopid}, #{minSpend}, #{eventid}, #{valueDate}, #{insertTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shopeeproduct.detailshopvouchers
+        <set>
+            <if test="discountValue != null">
+                discount_value = #{discountValue},
+            </if>
+            <if test="shopid != null and shopid != ''">
+                shopid = #{shopid},
+            </if>
+            <if test="minSpend != null">
+                min_spend = #{minSpend},
+            </if>
+            <if test="eventid != null and eventid != ''">
+                eventId = #{eventid},
+            </if>
+            <if test="valueDate != null">
+                value_date = #{valueDate},
+            </if>
+            <if test="insertTime != null">
+                insert_time = #{insertTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shopeeproduct.detailshopvouchers
+        where id = #{id}
+    </delete>
+
+</mapper>

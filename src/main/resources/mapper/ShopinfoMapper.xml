@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopeecapture.Mapper.ShopinfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.shopeecapture.Bean.Shopinfo">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="eventid" column="eventId" jdbcType="VARCHAR"/>
+        <result property="shopid" column="shopid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="LONGVARCHAR"/>
+        <result property="shopLocation" column="shop_location" jdbcType="VARCHAR"/>
+        <result property="lastActiveTime" column="last_active_time" jdbcType="VARCHAR"/>
+        <result property="itemCount" column="item_count" jdbcType="INTEGER"/>
+        <result property="min_itemCount" column="min_item_count" jdbcType="INTEGER"/>
+        <result property="max_itemCount" column="max_item_count" jdbcType="INTEGER"/>
+        <result property="ratingStar" column="rating_star" jdbcType="DOUBLE"/>
+        <result property="min_ratingStar" column="min_rating_star" jdbcType="DOUBLE"/>
+        <result property="max_ratingStar" column="max_rating_star" jdbcType="DOUBLE"/>
+        <result property="followerCount" column="follower_count" jdbcType="INTEGER"/>
+        <result property="min_followerCount" column="min_follower_count" jdbcType="INTEGER"/>
+        <result property="max_followerCount" column="max_follower_count" jdbcType="INTEGER"/>
+        <result property="responseRate" column="response_rate" jdbcType="VARCHAR"/>
+        <result property="responseTime" column="response_time" jdbcType="VARCHAR"/>
+        <result property="ratingBad" column="rating_bad" jdbcType="INTEGER"/>
+        <result property="min_ratingBad" column="min_rating_bad" jdbcType="INTEGER"/>
+        <result property="max_ratingBad" column="max_rating_bad" jdbcType="INTEGER"/>
+        <result property="ratingGood" column="rating_good" jdbcType="INTEGER"/>
+        <result property="min_ratingGood" column="min_rating_good" jdbcType="INTEGER"/>
+        <result property="max_ratingGood" column="max_rating_good" jdbcType="INTEGER"/>
+        <result property="ratingNormal" column="rating_normal" jdbcType="INTEGER"/>
+        <result property="min_ratingNormal" column="min_rating_normal" jdbcType="INTEGER"/>
+        <result property="max_ratingNormal" column="max_rating_normal" jdbcType="INTEGER"/>
+        <result property="isShopeeVerified" column="is_shopee_verified" jdbcType="VARCHAR"/>
+        <result property="isPreferredPlusSeller" column="is_preferred_plus_seller" jdbcType="VARCHAR"/>
+        <result property="isOfficialShop" column="is_official_shop" jdbcType="VARCHAR"/>
+        <result property="valueDate" column="value_date" jdbcType="DATE"/>
+        <result property="min_valueDate" column="min_value_date" jdbcType="DATE"/>
+        <result property="max_valueDate" column="max_value_date" jdbcType="DATE"/>
+        <result property="insertTime" column="insert_time" jdbcType="TIMESTAMP"/>
+        <result property="min_insertTime" column="min_insert_time" jdbcType="TIMESTAMP"/>
+        <result property="max_insertTime" column="max_insert_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <!--查当天爬取时，有没有漏数据没插入数据库-->
+    <select id="checkMissed" resultMap="BaseResultMap">
+        select eventId,shopid from products
+        where
+            not exists (select * from shopinfo where products.shopid = shopinfo.shopid)
+            and products.insert_time >= #{min_insertTime,jdbcType=TIMESTAMP} and products.insert_time &lt;= #{max_insertTime,jdbcType=TIMESTAMP}
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select * from shopeeproduct.shopinfo
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select * from shopeeproduct.shopinfo limit #{offset}, #{rowCount}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByFilters" resultMap="BaseResultMap">
+        select * from shopeeproduct.shopinfo
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="eventid != null and eventid != ''">
+                and eventId like CONCAT('%',#{eventid},'%')
+            </if>
+            <if test="shopid != null and shopid != ''">
+                and shopid like CONCAT('%',#{shopid},'%')
+            </if>
+            <if test="name != null and name != ''">
+                and name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="shopLocation != null and shopLocation != ''">
+                and shop_location like CONCAT('%',#{shopLocation},'%')
+            </if>
+            <if test="lastActiveTime != null and lastActiveTime != ''">
+                and last_active_time like CONCAT('%',#{lastActiveTime},'%')
+            </if>
+            <if test="itemCount != null">
+                and item_count = #{itemCount}
+            </if>
+            <if test="min_itemCount != null">
+                and item_count &gt;= #{min_itemCount}
+            </if>
+            <if test="max_itemCount != null">
+                and item_count &lt;= #{max_itemCount}
+            </if>
+            <if test="ratingStar != null">
+                and rating_star = #{ratingStar}
+            </if>
+            <if test="min_ratingStar != null">
+                and rating_star &gt;= #{min_ratingStar}
+            </if>
+            <if test="max_ratingStar != null">
+                and rating_star &lt;= #{max_ratingStar}
+            </if>
+            <if test="followerCount != null">
+                and follower_count = #{followerCount}
+            </if>
+            <if test="min_followerCount != null">
+                and follower_count &gt;= #{min_followerCount}
+            </if>
+            <if test="max_followerCount != null">
+                and follower_count &lt;= #{max_followerCount}
+            </if>
+            <if test="responseRate != null and responseRate != ''">
+                and response_rate like CONCAT('%',#{responseRate},'%')
+            </if>
+            <if test="responseTime != null and responseTime != ''">
+                and response_time like CONCAT('%',#{responseTime},'%')
+            </if>
+            <if test="ratingBad != null">
+                and rating_bad = #{ratingBad}
+            </if>
+            <if test="min_ratingBad != null">
+                and rating_bad &gt;= #{min_ratingBad}
+            </if>
+            <if test="max_ratingBad != null">
+                and rating_bad &lt;= #{max_ratingBad}
+            </if>
+            <if test="ratingGood != null">
+                and rating_good = #{ratingGood}
+            </if>
+            <if test="min_ratingGood != null">
+                and rating_good &gt;= #{min_ratingGood}
+            </if>
+            <if test="max_ratingGood != null">
+                and rating_good &lt;= #{max_ratingGood}
+            </if>
+            <if test="ratingNormal != null">
+                and rating_normal = #{ratingNormal}
+            </if>
+            <if test="min_ratingNormal != null">
+                and rating_normal &gt;= #{min_ratingNormal}
+            </if>
+            <if test="max_ratingNormal != null">
+                and rating_normal &lt;= #{max_ratingNormal}
+            </if>
+            <if test="isShopeeVerified != null and isShopeeVerified != ''">
+                and is_shopee_verified like CONCAT('%',#{isShopeeVerified},'%')
+            </if>
+            <if test="isPreferredPlusSeller != null and isPreferredPlusSeller != ''">
+                and is_preferred_plus_seller like CONCAT('%',#{isPreferredPlusSeller},'%')
+            </if>
+            <if test="isOfficialShop != null and isOfficialShop != ''">
+                and is_official_shop like CONCAT('%',#{isOfficialShop},'%')
+            </if>
+            <if test="valueDate != null">
+                and value_date = date_format(#{valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_valueDate != null">
+                and value_date &gt;= date_format(#{min_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_valueDate != null">
+                and value_date &lt;= date_format(#{max_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="insertTime != null">
+                and insert_time = date_format(#{insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_insertTime != null">
+                and insert_time &gt;= date_format(#{min_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_insertTime != null">
+                and insert_time &lt;= date_format(#{max_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shopeeproduct.shopinfo(eventId, shopid, name, shop_location, last_active_time, item_count,
+                                           rating_star, follower_count, response_rate, response_time, rating_bad,
+                                           rating_good, rating_normal, is_shopee_verified, is_preferred_plus_seller,
+                                           is_official_shop, value_date, insert_time)
+        values (#{eventid}, #{shopid}, #{name}, #{shopLocation}, #{lastActiveTime}, #{itemCount}, #{ratingStar},
+                #{followerCount}, #{responseRate}, #{responseTime}, #{ratingBad}, #{ratingGood}, #{ratingNormal},
+                #{isShopeeVerified}, #{isPreferredPlusSeller}, #{isOfficialShop}, #{valueDate}, #{insertTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shopeeproduct.shopinfo
+        <set>
+            <if test="eventid != null and eventid != ''">
+                eventId = #{eventid},
+            </if>
+            <if test="shopid != null and shopid != ''">
+                shopid = #{shopid},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="shopLocation != null and shopLocation != ''">
+                shop_location = #{shopLocation},
+            </if>
+            <if test="lastActiveTime != null and lastActiveTime != ''">
+                last_active_time = #{lastActiveTime},
+            </if>
+            <if test="itemCount != null">
+                item_count = #{itemCount},
+            </if>
+            <if test="ratingStar != null">
+                rating_star = #{ratingStar},
+            </if>
+            <if test="followerCount != null">
+                follower_count = #{followerCount},
+            </if>
+            <if test="responseRate != null and responseRate != ''">
+                response_rate = #{responseRate},
+            </if>
+            <if test="responseTime != null and responseTime != ''">
+                response_time = #{responseTime},
+            </if>
+            <if test="ratingBad != null">
+                rating_bad = #{ratingBad},
+            </if>
+            <if test="ratingGood != null">
+                rating_good = #{ratingGood},
+            </if>
+            <if test="ratingNormal != null">
+                rating_normal = #{ratingNormal},
+            </if>
+            <if test="isShopeeVerified != null and isShopeeVerified != ''">
+                is_shopee_verified = #{isShopeeVerified},
+            </if>
+            <if test="isPreferredPlusSeller != null and isPreferredPlusSeller != ''">
+                is_preferred_plus_seller = #{isPreferredPlusSeller},
+            </if>
+            <if test="isOfficialShop != null and isOfficialShop != ''">
+                is_official_shop = #{isOfficialShop},
+            </if>
+            <if test="valueDate != null">
+                value_date = #{valueDate},
+            </if>
+            <if test="insertTime != null">
+                insert_time = #{insertTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shopeeproduct.shopinfo
+        where id = #{id}
+    </delete>
+
+</mapper>

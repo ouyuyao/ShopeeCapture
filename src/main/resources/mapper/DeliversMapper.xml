@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopeecapture.Mapper.DeliversMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.shopeecapture.Bean.Delivers">
+        <!--@Table -->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="eventid" column="eventId" jdbcType="VARCHAR"/>
+        <result property="itemid" column="itemid" jdbcType="VARCHAR"/>
+        <result property="shopid" column="shopid" jdbcType="VARCHAR"/>
+        <result property="minSpend" column="min_spend" jdbcType="DOUBLE"/>
+        <result property="min_minSpend" column="min_min_spend" jdbcType="DOUBLE"/>
+        <result property="max_minSpend" column="max_min_spend" jdbcType="DOUBLE"/>
+        <result property="minPrice" column="min_price" jdbcType="DOUBLE"/>
+        <result property="min_minPrice" column="min_min_price" jdbcType="DOUBLE"/>
+        <result property="max_minPrice" column="max_min_price" jdbcType="DOUBLE"/>
+        <result property="maxPrice" column="max_price" jdbcType="DOUBLE"/>
+        <result property="min_maxPrice" column="min_max_price" jdbcType="DOUBLE"/>
+        <result property="max_maxPrice" column="max_max_price" jdbcType="DOUBLE"/>
+        <result property="ungroupedChannelInfos" column="ungrouped_channel_infos" jdbcType="VARCHAR"/>
+        <result property="medianPrice" column="median_price" jdbcType="DOUBLE"/>
+        <result property="min_medianPrice" column="min_median_price" jdbcType="DOUBLE"/>
+        <result property="max_medianPrice" column="max_median_price" jdbcType="DOUBLE"/>
+        <result property="valueDate" column="value_date" jdbcType="DATE"/>
+        <result property="min_valueDate" column="min_value_date" jdbcType="DATE"/>
+        <result property="max_valueDate" column="max_value_date" jdbcType="DATE"/>
+        <result property="insertTime" column="insert_time" jdbcType="TIMESTAMP"/>
+        <result property="min_insertTime" column="min_insert_time" jdbcType="TIMESTAMP"/>
+        <result property="max_insertTime" column="max_insert_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select * from shopeeproduct.delivers
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select * from shopeeproduct.delivers limit #{offset}, #{rowCount}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryByFilters" resultMap="BaseResultMap">
+        select * from shopeeproduct.delivers
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="eventid != null and eventid != ''">
+                and eventId like CONCAT('%',#{eventid},'%')
+            </if>
+            <if test="itemid != null and itemid != ''">
+                and itemid like CONCAT('%',#{itemid},'%')
+            </if>
+            <if test="shopid != null and shopid != ''">
+                and shopid like CONCAT('%',#{shopid},'%')
+            </if>
+            <if test="minSpend != null">
+                and min_spend = #{minSpend}
+            </if>
+            <if test="min_minSpend != null">
+                and min_spend &gt;= #{min_minSpend}
+            </if>
+            <if test="max_minSpend != null">
+                and min_spend &lt;= #{max_minSpend}
+            </if>
+            <if test="minPrice != null">
+                and min_price = #{minPrice}
+            </if>
+            <if test="min_minPrice != null">
+                and min_price &gt;= #{min_minPrice}
+            </if>
+            <if test="max_minPrice != null">
+                and min_price &lt;= #{max_minPrice}
+            </if>
+            <if test="maxPrice != null">
+                and max_price = #{maxPrice}
+            </if>
+            <if test="min_maxPrice != null">
+                and max_price &gt;= #{min_maxPrice}
+            </if>
+            <if test="max_maxPrice != null">
+                and max_price &lt;= #{max_maxPrice}
+            </if>
+            <if test="valueDate != null">
+                and value_date = date_format(#{valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_valueDate != null">
+                and value_date &gt;= date_format(#{min_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_valueDate != null">
+                and value_date &lt;= date_format(#{max_valueDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="insertTime != null">
+                and insert_time = date_format(#{insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="min_insertTime != null">
+                and insert_time &gt;= date_format(#{min_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="max_insertTime != null">
+                and insert_time &lt;= date_format(#{max_insertTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="medianPrice != null">
+                and median_price = #{medianPrice}
+            </if>
+            <if test="min_medianPrice != null">
+                and median_price &gt;= #{min_medianPrice}
+            </if>
+            <if test="max_medianPrice != null">
+                and median_price &lt;= #{max_medianPrice}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shopeeproduct.delivers(eventId, itemid, shopid, min_spend, min_price, max_price, value_date,
+                                           insert_time, median_price)
+        values (#{eventid}, #{itemid}, #{shopid}, #{minSpend}, #{minPrice}, #{maxPrice}, #{valueDate}, #{insertTime},
+                #{medianPrice})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shopeeproduct.delivers
+        <set>
+            <if test="eventid != null and eventid != ''">
+                eventId = #{eventid},
+            </if>
+            <if test="itemid != null and itemid != ''">
+                itemid = #{itemid},
+            </if>
+            <if test="shopid != null and shopid != ''">
+                shopid = #{shopid},
+            </if>
+            <if test="minSpend != null">
+                min_spend = #{minSpend},
+            </if>
+            <if test="minPrice != null">
+                min_price = #{minPrice},
+            </if>
+            <if test="maxPrice != null">
+                max_price = #{maxPrice},
+            </if>
+            <if test="valueDate != null">
+                value_date = #{valueDate},
+            </if>
+            <if test="insertTime != null">
+                insert_time = #{insertTime},
+            </if>
+            <if test="medianPrice != null">
+                median_price = #{medianPrice},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shopeeproduct.delivers
+        where id = #{id}
+    </delete>
+
+</mapper>

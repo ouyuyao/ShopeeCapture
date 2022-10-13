@@ -1,0 +1,2 @@
+2022-10-13 19:53:30.424 [http-nio-8086-exec-1] com.example.shopeecapture.Controller.SearchController-manualCheckProductDetails-126 ERROR - SearchController manual Check Product Details got exception:null
+2022-10-13 19:55:30.800 [http-nio-8086-exec-1] com.example.shopeecapture.Controller.SearchController-manualCheckProductDetails-126 ERROR - SearchController manual Check Product Details got exception:null
