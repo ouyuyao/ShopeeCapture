@@ -1,5 +1,6 @@
 package com.example.shopeecapture.config.Email;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -25,7 +26,7 @@ public class EmailLog {
         this.contentList.add(emailMessageBean);
     }
 
-    public void sendEmail(){
+    public void sendEmail(String subject){
         String emailContents = generateHtml(contentList);
 
         Properties props = new Properties();
@@ -54,7 +55,7 @@ public class EmailLog {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
             // 设置邮件标题
-            message.setSubject("application log");
+            message.setSubject(StringUtils.isBlank(subject)?"application log":subject);
             // 设置邮件内容
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             String emailContentText = generateHtml(contentList);

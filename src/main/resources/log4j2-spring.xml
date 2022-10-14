@@ -13,7 +13,7 @@
         <!-- <property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %C.%M - %m%n</property> -->
         <!-- 日志文件默认输出格式,另类带行号输出(对日志输出性能未知);%C:大写,类名;%M:方法名;%L:行号;%m:错误信息;%n:换行 -->
         <!--<property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %C.%M[%L line] - %m%n</property>-->
-        <property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %C-%M-%L %-5level - %m%n</property>
+        <property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %C-%M-%L - %m%n</property>
         <!-- 日志默认切割的最小单位 -->
         <property name="every_file_size">50MB</property>
         <!-- 日志默认输出级别 -->

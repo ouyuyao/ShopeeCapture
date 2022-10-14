@@ -63,4 +63,13 @@ public interface ProductsMapper {
      */
     int deleteById(Integer id);
 
+    /**
+     * 通过itemid shopid删除数据
+     *
+     * @param itemid itemid
+     * @param shopid shopid
+     * @return 是否成功
+     */
+    int deleteByItemAndShopId(String itemid, String shopid);
+
 }

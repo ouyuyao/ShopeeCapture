@@ -313,4 +313,11 @@
         where id = #{id}
     </delete>
 
+    <!--通过itemid shopid删除-->
+    <delete id="deleteByItemAndShopId">
+        delete
+        from shopeeproduct.products
+        where itemid = #{itemid} and shopid = #{shopid}
+    </delete>
+
 </mapper>

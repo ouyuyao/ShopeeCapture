@@ -4,8 +4,10 @@ import com.example.shopeecapture.Bean.Products;
 import com.example.shopeecapture.Mapper.*;
 import com.example.shopeecapture.Utils.InfoGetter;
 import com.example.shopeecapture.Utils.Utils;
+import com.example.shopeecapture.config.Email.EmailLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -22,16 +24,27 @@ public class AsyncThreadTaskService {
 
     @Resource
     private ProductsMapper productsMapper;
+    @Autowired
+    EmailLog emailLog;
 
     @Async("asyncTaskExecutor")
     public Future<String> insertProduct(List<Products> totalProductsList,CountDownLatch countDownLatchForProducts){
+        int insertCount = 0;
         try{
             long startTime = System.currentTimeMillis();
             logger.info("insertProduct Async start-------");
             if(totalProductsList.size()>0){
+                logger.error("check size before loop:"+totalProductsList.size());
+                int loopcount = 0;
                 for (Products products : totalProductsList) {
-                    this.productsMapper.insert(products);
+                    int insertMark = this.productsMapper.insert(products);
+                    insertCount = insertMark<=0?(insertCount):(insertCount+1);
+                    if (insertMark!=1){
+                        logger.error("itemid:"+products.getItemid()+"-shopid:"+products.getShopid()+"---insert mark:"+insertMark+"===========");
+                    }
+                    loopcount = loopcount + 1;
                 }
+                logger.error("check loop count after loop finish:"+loopcount);
             }
             long endTime = System.currentTimeMillis();
             long processTime = endTime - startTime;
@@ -41,12 +54,13 @@ public class AsyncThreadTaskService {
             logger.error(e.getMessage());
         }finally {
             countDownLatchForProducts.countDown();
-            return new AsyncResult<>( "DONE");
+            return new AsyncResult<>(String.valueOf(insertCount));
         }
     }
 
     @Async("asyncTaskExecutor")
     public Future<String> processProductDetails(String eventId, List<String> totalShopId_itemId_pairList,CountDownLatch countDownLatchForProductDetails,DetailmodelsMapper detailmodelsMapper,DetailshopvouchersMapper detailshopvouchersMapper,ProductdetailsMapper productdetailsMapper){
+        int processCount = 0;
         try{
             long startTime = System.currentTimeMillis();
             logger.info("processProductDetails Async start-------");
@@ -61,6 +75,7 @@ public class AsyncThreadTaskService {
                         Map<String, Object> result1 = InfoGetter.getProductDetails(itemId, shopId, eventId,detailmodelsMapper,detailshopvouchersMapper,productdetailsMapper);
                         if (result1 != null) {
                             loopCount = loopCount + 1;
+                            processCount = processCount + result1.size();
                         }
                         logger.info("get product detail info process:" + Utils.getPercent(loopCount, totalShopId_itemId_pairList.size()));
                     } catch (Exception e) {
@@ -76,12 +91,13 @@ public class AsyncThreadTaskService {
             logger.error(e.getMessage());
         }finally {
             countDownLatchForProductDetails.countDown();
-            return new AsyncResult<>( "DONE");
+            return new AsyncResult<>( String.valueOf(processCount));
         }
     }
 
     @Async("asyncTaskExecutor")
     public Future<String> processShopInfos(String eventId, List<String> totalShopIdList,CountDownLatch countDownLatchForShopInfos,ShopinfoMapper shopinfoMapper){
+        int processCount = 0;
         try{
             long startTime = System.currentTimeMillis();
             logger.info("processShopInfos Async start-------");
@@ -93,10 +109,11 @@ public class AsyncThreadTaskService {
                         Map<String, Object> result1 = InfoGetter.getShopInfo(shopid, eventId,shopinfoMapper);
                         if (result1 != null) {
                             loopCount = loopCount + 1;
+                            processCount = processCount + 1;
                         }
                         logger.info("get shop info process:" + Utils.getPercent(loopCount, totalShopIdList.size()));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -108,7 +125,7 @@ public class AsyncThreadTaskService {
             logger.error(e.getMessage());
         }finally {
             countDownLatchForShopInfos.countDown();
-            return new AsyncResult<>( "DONE");
+            return new AsyncResult<>( String.valueOf(processCount));
         }
     }
 

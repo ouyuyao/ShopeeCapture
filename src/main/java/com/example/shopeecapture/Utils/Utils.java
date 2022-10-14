@@ -126,19 +126,19 @@ public class Utils {
 
         StringBuffer sb = new StringBuffer();
         if(day > 0) {
-            sb.append(day+"Day");
+            sb.append(day+" Day ");
         }
         if(hour > 0) {
-            sb.append(hour+"Hours");
+            sb.append(hour+" Hours ");
         }
         if(minute > 0) {
-            sb.append(minute+"Min");
+            sb.append(minute+" Min ");
         }
         if(second > 0) {
-            sb.append(second+"Sec");
+            sb.append(second+" Sec ");
         }
         if(milliSecond > 0) {
-            sb.append(milliSecond+"ms");
+            sb.append(milliSecond+" ms ");
         }
         return sb.toString();
     }

@@ -56,6 +56,7 @@ public class SearchController {
     @ResponseBody
     public ResponseInfo manualSearch() throws Exception {
         ResponseInfo activtyResponse = new ResponseInfo();
+        emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("manualSearch start process::::::")));
         long startTime = System.currentTimeMillis();
         try {
             ResponseInfo responseInfo = searchkeyService.queryAll();
@@ -84,13 +85,17 @@ public class SearchController {
         }finally {
             long endTime = System.currentTimeMillis();
             long processTime = endTime - startTime;
-            logger.info("total process time:" + Utils.formatTime(processTime));
+            logger.info("manualSearch total process time:" + Utils.formatTime(processTime));
+            emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("manualSearch total process time:" + Utils.formatTime(processTime))));
+            emailLog.sendEmail("manualSearch-"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             return activtyResponse;
         }
     }
 
-    @Scheduled(cron = "${timeTask.cron}")
+//    @Scheduled(cron = "${timeTask.cron}")
     public void autoSearch() throws Exception {
+        emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("autoSearch start process::::::")));
+        long startTime = System.currentTimeMillis();
         try {
             ResponseInfo responseInfo = searchkeyService.queryAll();
             List<Searchkey> keyList = (List<Searchkey>) responseInfo.getResponseMsg();
@@ -106,6 +111,12 @@ public class SearchController {
             }
         } catch (Exception e) {
             logger.error("SearchController select By searchStr got exception:" + e.getMessage());
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long processTime = endTime - startTime;
+            logger.info("autoSearch total process time:" + Utils.formatTime(processTime));
+            emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("autoSearch total process time:" + Utils.formatTime(processTime))));
+            emailLog.sendEmail("autoSearch-"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         }
     }
 
@@ -113,6 +124,7 @@ public class SearchController {
     @RequestMapping(value = "manualCheckProductDetails", method = RequestMethod.GET)
     @ResponseBody
     public ResponseInfo manualCheckProductDetails() {
+        emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("manualCheckProductDetails start process::::::")));
         ResponseInfo activtyResponse = new ResponseInfo();
         long startTime = System.currentTimeMillis();
         try {
@@ -134,12 +146,13 @@ public class SearchController {
             long endTime = System.currentTimeMillis();
             long processTime = endTime - startTime;
             logger.info("manualCheckProductDetails total process time:" + Utils.formatTime(processTime));
-            emailLog.sendEmail();
+            emailLog.sendEmail("manualCheckProductDetails-"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             return activtyResponse;
         }
     }
-    @Scheduled(cron = "${timeTask.cronProductDetails}")
+//    @Scheduled(cron = "${timeTask.cronProductDetails}")
     public void autoCheckProductDetails() throws Exception {
+        emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("autoCheckProductDetails start process::::::")));
         long startTime = System.currentTimeMillis();
         try {
             logger.info("autoCheckProductDetails process start");
@@ -157,7 +170,7 @@ public class SearchController {
             long endTime = System.currentTimeMillis();
             long processTime = endTime - startTime;
             logger.info("autoCheckProductDetails total process time:" + Utils.formatTime(processTime));
-            emailLog.sendEmail();
+            emailLog.sendEmail("autoCheckProductDetails-"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         }
     }
 
@@ -165,6 +178,7 @@ public class SearchController {
     @RequestMapping(value = "manualCheckShopInfo", method = RequestMethod.GET)
     @ResponseBody
     public ResponseInfo manualCheckShopInfo() throws Exception {
+        emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("manualCheckShopInfo start process::::::")));
         ResponseInfo activtyResponse = new ResponseInfo();
         long startTime = System.currentTimeMillis();
         try {
@@ -186,12 +200,13 @@ public class SearchController {
             long endTime = System.currentTimeMillis();
             long processTime = endTime - startTime;
             logger.info("manualCheckShopInfo total process time:" + Utils.formatTime(processTime));
-            emailLog.sendEmail();
+            emailLog.sendEmail("manualCheckShopInfo-"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             return activtyResponse;
         }
     }
-    @Scheduled(cron = "${timeTask.cronShopInfo}")
+//    @Scheduled(cron = "${timeTask.cronShopInfo}")
     public void autoCheckShopInfo() throws Exception {
+        emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("autoCheckShopInfo start process::::::")));
         long startTime = System.currentTimeMillis();
         try {
             logger.info("autoCheckShopInfo process start");
@@ -209,7 +224,7 @@ public class SearchController {
             long endTime = System.currentTimeMillis();
             long processTime = endTime - startTime;
             logger.info("autoCheckShopInfo total process time:" + Utils.formatTime(processTime));
-            emailLog.sendEmail();
+            emailLog.sendEmail("autoCheckShopInfo-"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         }
     }
 }

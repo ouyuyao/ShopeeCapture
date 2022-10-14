@@ -80,7 +80,7 @@ public class InfoGetter {
                                 products.setPriceMinBeforeDiscount(Utils.doubleValueCheck(itemBasicJsonObject.get("price_min_before_discount")));
                                 products.setPriceMaxBeforeDiscount(Utils.doubleValueCheck(itemBasicJsonObject.get("price_max_before_discount")));
                                 products.setShowDiscount(itemBasicJsonObject.get("show_discount") == null ? "0" : (itemBasicJsonObject.get("show_discount").toString() + "%"));
-                                products.setTierVariations(itemBasicJsonObject.get("tier_variations") == null ? "" : itemBasicJsonObject.get("tier_variations").toString());
+//                                products.setTierVariations(itemBasicJsonObject.get("tier_variations") == null ? "" : itemBasicJsonObject.get("tier_variations").toString());
                                 products.setShopeeVerified(itemBasicJsonObject.get("shopee_verified") == null ? "false" : itemBasicJsonObject.get("shopee_verified").toString());
                                 products.setIsOfficialShop(itemBasicJsonObject.get("is_official_shop") == null ? "false" : itemBasicJsonObject.get("is_official_shop").toString());
                                 products.setShopLocation(itemBasicJsonObject.get("shop_location") == null ? "" : itemBasicJsonObject.get("shop_location").toString());

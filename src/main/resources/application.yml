@@ -7,7 +7,7 @@ spring:
     #mysql
     username: root
     password: 123456789
-    url: jdbc:mysql://localhost:3306/shopeeproduct?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/shopeeproduct?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     #durid
     type: com.alibaba.druid.pool.DruidDataSource
@@ -43,9 +43,9 @@ spring:
   task:
     execution:
       pool:
-        core-size: 20
-        max-size: 40
-        queue-capacity: 20
+        core-size: 10
+        max-size: 20
+        queue-capacity: 10
         keep-alive: 60
         thread-name-prefix: threadTask
 
@@ -62,5 +62,5 @@ timeTask:
 #  cron: 0 */3 * * * ?
   #每天零时
   cron: 0 0 0,12 * * ?
-  cronShopInfo: 0 20 2,4,6,8,10,14,16,18,20,22 * * ?
-  cronProductDetails: 0 0 3,5,7,9,11,15,17,19,21,23 * * ?
+  cronShopInfo: 0 0 2,4,6,8,10,14,16,18,20 * * ?
+  cronProductDetails: 0 0 2,5,8,10,14,17,20,22 * * ?

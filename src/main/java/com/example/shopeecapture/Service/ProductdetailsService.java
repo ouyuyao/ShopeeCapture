@@ -1,11 +1,13 @@
 package com.example.shopeecapture.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.shopeecapture.Utils.Utils;
 import com.example.shopeecapture.config.*;
 import com.example.shopeecapture.Bean.*;
 import com.example.shopeecapture.Mapper.*;
 import com.example.shopeecapture.config.Email.EmailLog;
 import com.example.shopeecapture.config.Email.EmailMessageBean;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.*;
 
 import java.util.*;
@@ -32,6 +34,8 @@ public class ProductdetailsService {
     private DetailmodelsMapper detailmodelsMapper;
     @Resource
     private DetailshopvouchersMapper detailshopvouchersMapper;
+    @Resource
+    private ProductsMapper productsMapper;
 
     @Resource
     private AsyncThreadTaskService asyncThreadTaskService;
@@ -64,6 +68,15 @@ public class ProductdetailsService {
                 logger.info("runResult:"+runResult);
                 if ("1".equals(runResult)){
                     finishCount = finishCount + 1;
+                }else{
+                    String requestUrl = "https://xiapi.xiapibuy.com/api/v4/item/get?itemid=" + productdetails1.getItemid() + "&shopid=" + productdetails1.getShopid();
+                    JSONObject callResult = Utils.callShoppe(requestUrl);
+                    if (callResult != null) {
+                        String data = callResult.get("data") == null ? "" : callResult.get("data").toString();
+                        if (StringUtils.isBlank(data)) {
+                            this.productsMapper.deleteByItemAndShopId(productdetails1.getItemid(),productdetails1.getShopid());
+                        }
+                    }
                 }
                 futureList.add(asyncResult);
             }
