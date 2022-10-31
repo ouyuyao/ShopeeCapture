@@ -24,9 +24,9 @@ public class Utils {
     public static JSONObject callShoppe(String requestUrl) throws InterruptedException {
         JSONObject jsonObject = null;
         logger.debug("call shopee start-------");
-        logger.debug(requestUrl);
+        logger.debug("requestUrl: " + requestUrl);
         int callCount = 0;
-        int initCallCount = 5;
+        int initCallCount = 20;
         while (callCount<initCallCount){
             try{
                 HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
@@ -36,8 +36,8 @@ public class Utils {
                 SSLSocketFactory ssf = sslContext.getSocketFactory();
                 URL url = new URL(requestUrl);
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-                con.setConnectTimeout(600000);
-                con.setReadTimeout(600000);
+                con.setConnectTimeout(5000);
+                con.setReadTimeout(5000);
                 con.setSSLSocketFactory(ssf);
                 con.setRequestMethod("GET");
                 con.setDoInput(true);
@@ -51,12 +51,13 @@ public class Utils {
                     result.append(line);
                 }
                 jsonObject = JSONObject.parseObject(result.toString());
-                callCount = initCallCount;
+                logger.debug("response: " + jsonObject.toJSONString());
                 logger.debug("call "+(callCount+1)+" time and finished");
+                callCount = initCallCount;
             }catch (Exception e){
                 callCount = callCount + 1;
                 logger.debug("call "+callCount+" time");
-                logger.error(e.getMessage());
+                logger.debug(e.getMessage());
                 Thread.sleep(1000);
             }
             logger.debug("call shopee end-------");
@@ -73,7 +74,7 @@ public class Utils {
     }
 
     public static double doubleValueCheck(Object value){
-        if (value==null){
+        if (null==value){
             return 0;
         }else{
             double valueDouble = Double.parseDouble(value.toString());
@@ -87,7 +88,7 @@ public class Utils {
     }
 
     public static int intValueCheck(Object value){
-        if (value==null){
+        if (null==value){
             return 0;
         }else{
             int valueInt = Integer.parseInt(value.toString());

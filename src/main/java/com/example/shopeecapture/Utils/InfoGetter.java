@@ -49,11 +49,11 @@ public class InfoGetter {
         List shopId_itemId_pairList = new ArrayList();
         try {
             for (int j = 0; j < pageCount; j++) {
-                logger.info("getProduct start-------" + j);
+                logger.info("getProduct seq-------" + j);
                 int newest = j * 60;
                 String requestUrl = "https://xiapi.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=" + searchStr + "&limit=60&newest=" + newest + "&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2";
                 JSONObject callResult = Utils.callShoppe(requestUrl);
-                if (callResult != null) {
+                if (null != callResult) {
                     String items = callResult.get("items") == null ? "" : callResult.get("items").toString();
                     if (StringUtils.isNotBlank(items)) {
                         JSONArray itemsJsonArray = JSONArray.parseArray(items);
@@ -93,6 +93,7 @@ public class InfoGetter {
                                     shopId_itemId_pairList.add(itemId + "-" + shopId);
                                     shopIdList.add(shopId);
                                     productsList.add(products);
+                                    logger.info("getProduct seq-------" + j + " done "+" ,itemId-shopId:"+itemId + "-" + shopId);
                                 } else {
                                     if (StringUtils.isBlank(itemId)) {
                                         logger.info("itemId is null:" + itemId);
@@ -145,7 +146,7 @@ public class InfoGetter {
             Productdetails productdetails = new Productdetails();
             String requestUrl = "https://xiapi.xiapibuy.com/api/v4/item/get?itemid=" + itemId + "&shopid=" + shopId;
             JSONObject callResult = Utils.callShoppe(requestUrl);
-            if (callResult != null) {
+            if (null != callResult) {
                 String data = callResult.get("data") == null ? "" : callResult.get("data").toString();
                 if (StringUtils.isNotBlank(data)) {
                     productdetails.setEventid(eventId);

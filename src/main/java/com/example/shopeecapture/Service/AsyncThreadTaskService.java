@@ -38,6 +38,12 @@ public class AsyncThreadTaskService {
                 int loopcount = 0;
                 for (Products products : totalProductsList) {
                     int insertMark = this.productsMapper.insert(products);
+                    int retryInsertCount = 0 ;
+                    while(insertMark<=0){
+                        insertMark = this.productsMapper.insert(products);
+                        retryInsertCount = retryInsertCount + 1;
+                    }
+                    logger.error("retryInsertCount:"+retryInsertCount);
                     insertCount = insertMark<=0?(insertCount):(insertCount+1);
                     if (insertMark!=1){
                         logger.error("itemid:"+products.getItemid()+"-shopid:"+products.getShopid()+"---insert mark:"+insertMark+"===========");
@@ -73,7 +79,7 @@ public class AsyncThreadTaskService {
                         String itemId = ids[0];
                         String shopId = ids[1];
                         Map<String, Object> result1 = InfoGetter.getProductDetails(itemId, shopId, eventId,detailmodelsMapper,detailshopvouchersMapper,productdetailsMapper);
-                        if (result1 != null) {
+                        if (null != result1) {
                             loopCount = loopCount + 1;
                             processCount = processCount + result1.size();
                         }

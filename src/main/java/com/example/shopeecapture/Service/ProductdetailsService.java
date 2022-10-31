@@ -71,7 +71,7 @@ public class ProductdetailsService {
                 }else{
                     String requestUrl = "https://xiapi.xiapibuy.com/api/v4/item/get?itemid=" + productdetails1.getItemid() + "&shopid=" + productdetails1.getShopid();
                     JSONObject callResult = Utils.callShoppe(requestUrl);
-                    if (callResult != null) {
+                    if (null != callResult) {
                         String data = callResult.get("data") == null ? "" : callResult.get("data").toString();
                         if (StringUtils.isBlank(data)) {
                             this.productsMapper.deleteByItemAndShopId(productdetails1.getItemid(),productdetails1.getShopid());

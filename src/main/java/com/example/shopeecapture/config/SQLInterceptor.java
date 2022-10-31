@@ -48,7 +48,7 @@ public class SQLInterceptor implements Interceptor {
         long time = (end - start);
         if (time > 1) {
             String sql = getSql(configuration, boundSql, sqlId, time);
-            logger.info(sql);
+            logger.debug(sql);
         }
         return returnValue;
     }
@@ -86,7 +86,7 @@ public class SQLInterceptor implements Interceptor {
         Object parameterObject = boundSql.getParameterObject();
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
         String sql = boundSql.getSql().replaceAll("[\\s]+", " ");
-        if (parameterMappings.size() > 0 && parameterObject != null) {
+        if (parameterMappings.size() > 0 && null != parameterObject) {
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
             if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
                 sql = sql.replaceFirst("\\?", getParameterValue(parameterObject));

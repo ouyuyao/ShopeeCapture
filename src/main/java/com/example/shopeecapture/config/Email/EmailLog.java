@@ -1,6 +1,7 @@
 package com.example.shopeecapture.config.Email;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -16,9 +17,16 @@ import java.util.Properties;
 @Configuration
 public class EmailLog {
 
-//    EmailMessageBean emailMessageBean = new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(),("responseInfo:"+responseInfo.getResponseMsg().toString()));
-//            emailLog.log(emailMessageBean);
-//            emailLog.sendEmail();
+    @Value("${email.sender}")
+    private String sender;
+    @Value("${email.receiver}")
+    private String receiver;
+    @Value("${email.host}")
+    private String host;
+    @Value("${email.username}")
+    private String username;
+    @Value("${email.password}")
+    private String password;
 
     List<EmailMessageBean> contentList = new ArrayList<>();
 
@@ -27,29 +35,23 @@ public class EmailLog {
     }
 
     public void sendEmail(String subject){
-        String emailContents = generateHtml(contentList);
-
         Properties props = new Properties();
-
         // 设置邮箱服务器的Properties
-        props.put("mail.smtp.host", "smtp.qq.com");
+        props.put("mail.smtp.host", host);
         // 设置通过服务器认证
         props.put("mail.smtp.auth", "true");
-
         // 创建一个 session
         Session session = javax.mail.Session.getInstance(props);
-
         // 开启debug模式 可以logcat上看发件时的信息
         session.setDebug(false);
-
         MimeMessage message = new MimeMessage(session);
         try {
             // 设置发件地址
-            message.setFrom(new InternetAddress("398005033@qq.com"));
+            message.setFrom(new InternetAddress(sender));
             // 设置接收地址
             //多个收件地址
             String[] eachRecipients = null;
-            eachRecipients = "otto.ou.oyylwy@gmail.com".split("\\|");
+            eachRecipients = receiver.split("\\|");
             for(int i=0;i<eachRecipients.length;i++){
                 String recipient = eachRecipients[i];
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
@@ -67,15 +69,13 @@ public class EmailLog {
             message.saveChanges();
             Transport transport = session.getTransport("smtp");
             // 连接服务器
-            transport.connect("smtp.qq.com", "398005033@qq.com", "qdfnbrtcpqgtbifi");
+            transport.connect(host, username, password);
             // 发送
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        this.contentList = new ArrayList<>();
     }
 
     /**

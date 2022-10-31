@@ -43,11 +43,14 @@ spring:
   task:
     execution:
       pool:
-        core-size: 10
-        max-size: 20
-        queue-capacity: 10
+        core-size: 2
+        max-size: 4
+        queue-capacity: 1
         keep-alive: 60
         thread-name-prefix: threadTask
+    scheduling:
+      pool:
+        size: 3
 
 #mybatis
 mybatis:
@@ -55,12 +58,22 @@ mybatis:
   configuration:
     use-generated-keys: true
 
+email:
+  sender: 398005033@qq.com
+#  receiver: otto.ou.oyylwy@gmail.com
+  receiver: otto.ou.oyylwy@gmail.com|825453772@qq.com
+  host: smtp.qq.com
+  username: 398005033@qq.com
+  password: qdfnbrtcpqgtbifi
+
 timeTask:
   #每天11点08分运行
-#  cron: 30 35 16 * * ?
+#  cron: 00 05 11 * * ?
+#  cronShopInfo: 00 05 11 * * ?
+#  cronProductDetails: 00 05 11 * * ?
   #每五分钟
 #  cron: 0 */3 * * * ?
   #每天零时
   cron: 0 0 0,12 * * ?
-  cronShopInfo: 0 0 2,4,6,8,10,14,16,18,20 * * ?
-  cronProductDetails: 0 0 2,5,8,10,14,17,20,22 * * ?
+  cronShopInfo: 0 0 4,8,16,20 * * ?
+  cronProductDetails: 0 0 4,8,16,20 * * ?

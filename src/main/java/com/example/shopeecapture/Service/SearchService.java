@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,6 +46,8 @@ public class SearchService {
     private ProductdetailsMapper productdetailsMapper;
     @Resource
     private ShopinfoMapper shopinfoMapper;
+    @Resource
+    private ProductsMapper productsMapper;
     @Autowired
     EmailLog emailLog;
 
@@ -65,10 +68,9 @@ public class SearchService {
         List<Future<String>> futureList=new ArrayList<>();
 
         emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("prepare insert Products records:"+totalProductsList.size())));
-        CountDownLatch countDownLatchForProducts = new CountDownLatch(totalProductsList.size());
-        Future<String> asyncResult = asyncThreadTaskService.insertProduct(totalProductsList, countDownLatchForProducts);
-        String insertProductCount = asyncResult.get();
-        futureList.add(asyncResult);
+        logger.info("prepare insert Products records:"+totalProductsList.size());
+        String insertProductCount = insertProduct(totalProductsList);
+        logger.info("actually insert Products records:"+insertProductCount);
         emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("actually insert Products records:"+insertProductCount)));
 
         emailLog.log(new EmailMessageBean(this.getClass().getName(),Thread.currentThread().getName(), ("prepare handle ProductDetails records:"+totalShopId_itemId_pairList.size())));
@@ -125,7 +127,7 @@ public class SearchService {
                 int pageCount;
                 String requestUrl = "https://xiapi.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=" + searchStr + "&limit=60&newest=" + newest + "&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2";
                 JSONObject callResult = Utils.callShoppe(requestUrl);
-                if (callResult != null) {
+                if (null != callResult) {
                     String adjust = callResult.get("adjust") == null ? "" : callResult.get("adjust").toString();
                     if (StringUtils.isNotBlank(adjust)) {
                         JSONObject adjustJson = JSONObject.parseObject(adjust);
@@ -175,4 +177,45 @@ public class SearchService {
         return null;
     }
 
+
+
+    public String insertProduct(List<Products> totalProductsList){
+        int insertCount = 0;
+        try{
+            long startTime = System.currentTimeMillis();
+            logger.info("insertProduct start-------");
+            if(totalProductsList.size()>0){
+                logger.error("check size before loop:"+totalProductsList.size());
+                int loopcount = 0;
+                for (Products products : totalProductsList) {
+                    int insertMark = productsMapper.insert(products);
+                    int retryInsertCount = 0 ;
+                    while(insertMark<=0){
+                        insertMark = productsMapper.insert(products);
+                        retryInsertCount = retryInsertCount + 1;
+                        logger.error("product Shopid-Itemid:"+products.getShopid()+"-"+products.getItemid()+" retryInsertCount:"+retryInsertCount);
+                    }
+                    if (retryInsertCount==0){
+                        logger.error("product Shopid-Itemid:"+products.getShopid()+"-"+products.getItemid()+" final insert count:1");
+                    }else{
+                        logger.error("product Shopid-Itemid:"+products.getShopid()+"-"+products.getItemid()+" final insert count:"+retryInsertCount);
+                    }
+                    insertCount = insertMark<=0?(insertCount):(insertCount+1);
+                    if (insertMark!=1){
+                        logger.error("itemid:"+products.getItemid()+"-shopid:"+products.getShopid()+"---insert mark:"+insertMark+"===========");
+                    }
+                    loopcount = loopcount + 1;
+                }
+                logger.error("check loop count after loop finish:"+loopcount);
+            }
+            long endTime = System.currentTimeMillis();
+            long processTime = endTime - startTime;
+            logger.info("insertProduct process time:" + Utils.formatTime(processTime));
+            logger.info("insertProduct end-------");
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }finally {
+            return String.valueOf(insertCount);
+        }
+    }
 }

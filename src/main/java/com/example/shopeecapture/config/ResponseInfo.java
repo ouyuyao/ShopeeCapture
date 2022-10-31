@@ -35,7 +35,7 @@ public class ResponseInfo {
 
     public void setResponseMsg(List responseMsg) {
         if (responseMsg.size()>0){
-            if(responseMsg.get(0)==null){
+            if(null==responseMsg.get(0)){
                 this.status = Constants.NOT_RECORDS;
                 this.statusCode = String.valueOf(Constants.STATUS_SUCCESS);
                 Map errorMsg = new HashMap();
